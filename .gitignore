@@ -1,3 +1,18 @@
+#CCS files
+*.ccsproject
+*.cproject
+*.project
+*/.settings
+*/Debug/*
+*/Release/*
+/.jxbrowser-data/*
+*/.launches/
+*/targetConfigs/*
+*.cmd
+.DS_Store
+*.ccxml
+
+
 # Prerequisites
 *.d
 
@@ -30,3 +45,4 @@
 *.exe
 *.out
 *.app
+/.metadata/
