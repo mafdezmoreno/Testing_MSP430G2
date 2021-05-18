@@ -17,8 +17,19 @@ void main(void)
     WDTCTL = WDTPW + WDTHOLD; //Stop watchdog timer
 
     //MCLK=SMCLK=1Mhz
-    BCSCTL1 = CALBC1_1MHZ;
-    DCOCTL = CALDCO_1MHZ;
+        //DCOCTL, DCO Control Register
+        DCOCTL = 0;            //clears DCOCTL to set the DCOCLK to the lowest setting.
+        DCOCTL = CALDCO_1MHZ;  //Copy the calibration data
+
+
+        //BCSCTL1, Basic Clock System Control Register 1
+        BCSCTL1 = CALBC1_1MHZ; //Copy the calibration data
+
+
+    //BCSCTL2, Basic Clock System Control Register 2
+        //Allow set divider for clocks
+        BCSCTL2 |= DIVM_3 + DIVS_3; //MCLK snd SMCLK /8
+
 
     initTimer_A();
 
