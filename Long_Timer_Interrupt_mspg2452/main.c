@@ -5,7 +5,7 @@
 
 #include "msp430g2452.h"
 
-#define PIN_LED BIT3    //BIT1 default msp430g2 launchpad
+#define PIN_LED BIT2    //BIT1 default msp430g2 launchpad
 #define PORT_LED 2      //1 default msp430g2 launchpad
 
 void toggle_led();
@@ -14,6 +14,14 @@ void initTimer_A(void);
 
 void main(void)
 {
+    //Turning off pins by default (to save energy)
+    P1OUT = 0;
+    P2OUT = 0;
+    //enable pullup by default (to save energy)
+    P1REN |= 0b11111111;
+    P2REN |= 0b11111011; //except PIN_LED
+
+
     WDTCTL = WDTPW + WDTHOLD; //Stop watchdog timer
 
     //MCLK=SMCLK=1Mhz
@@ -37,12 +45,16 @@ void main(void)
 
     //while(1){
         _bis_SR_register(GIE); //Enable interrupts
-        //_bis_SR_register(LPM3_bits); //Enter Low Power Mode 3. It's need external clock
+        _bis_SR_register(LPM1_bits); //Enter Low Power Mode
+                                     //LPM2 an higher will need ACLK an external crystal
     //}
 
     /*
      * Energy consumption:
-     *      8,5mW (330ohm, yellow led, 3,3volt)
+     *      8,5mW (330ohm, yellow led, 3,3volt,ID_3)
+     *      7,5mW (330ohm, yellow led, 3,3volt,ID_3, LPM0, DIVM_3 + DIVS_3)
+     *      7,5mW (330ohm, yellow led, 3,3volt,ID_3, LPM1, DIVM_3 + DIVS_3)
+     *      6,9mW (330ohm, yellow led, 3,3volt,ID_3, LPM1, DIVM_3 + DIVS_3, turning off unused pins + pullups)
      */
 
 }
@@ -51,12 +63,12 @@ void set_output_dir(){
     switch(PORT_LED) {
        case 1 :
           P1DIR |=  PIN_LED;
-          P1OUT &= ~PIN_LED;
+          P1OUT |=  PIN_LED;
           break;
 
        case 2  :
           P2DIR |=  PIN_LED;
-          P2OUT &= ~PIN_LED;
+          P2OUT |=  PIN_LED;
           break;
     }
 }
@@ -95,5 +107,4 @@ void initTimer_A(void)
 __interrupt void Timer_A0(void)
 {
     toggle_led();
-    _bic_SR_register_on_exit(LPM3_bits);
 }
