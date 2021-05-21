@@ -66,6 +66,22 @@ void writeToLCD(unsigned char dataCommand, unsigned char data) {
 }
 
 void initLCD() {
+
+    P1OUT |= LCD5110_SCE_PIN | LCD5110_DC_PIN;  // Disable LCD, set Data mode
+    P1DIR |= LCD5110_SCE_PIN | LCD5110_DC_PIN;  // Set pins to output direction
+
+    // Setup USIB
+    P1SEL |= LCD5110_SCLK_PIN | LCD5110_DN_PIN;
+    P1SEL2 |= LCD5110_SCLK_PIN | LCD5110_DN_PIN;
+
+    UCB0CTL0 |= UCCKPH | UCMSB | UCMST | UCSYNC; // 3-pin, 8-bit SPI master
+    UCB0CTL1 |= UCSSEL_2;               // SMCLK
+    UCB0BR0 |= 0x01;                    // 1:1
+    UCB0BR1 = 0;
+    UCB0CTL1 &= ~UCSWRST;               // clear SW
+
+    __delay_cycles(50000);
+
     writeToLCD(LCD5110_COMMAND, PCD8544_FUNCTIONSET | PCD8544_EXTENDEDINSTRUCTION);
     writeToLCD(LCD5110_COMMAND, PCD8544_SETVOP | 0x3F);
     writeToLCD(LCD5110_COMMAND, PCD8544_SETTEMP | 0x02);
