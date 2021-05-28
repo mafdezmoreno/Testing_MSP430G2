@@ -2,24 +2,37 @@
  * Program to make the appropriate sound, with timer interruptions, to 
  * feed a buzzer to be integrated in an alarm clock.
  * 
+ * A push button activates/desactivates the alarm
+ * 
  */
 
 //#include <msp430.h> 
 #include "msp430g2452.h"
 #include "buzzer.h"
+#include "button.h"
 
 
-bool buzzer_on = true;
+bool buzzer_on = false;
 
 int main(void)
 {
-	
 	init_clocks();
 	initTimer_A();
 	init_buzzer(2, BIT2);  // (port, pin) PIN2.2
 	_bis_SR_register(GIE); //Enable interrupts
 
-	
+	init_button(2, BIT1);  // (port, pin) PIN2.2
+
+	while(true){
+		
+		if(check_state(2, BIT1)){
+			if(!buzzer_on)
+				buzzer_on = true;
+			else if (buzzer_on)
+				buzzer_on = false;
+			for(unsigned long int i=500; i>0; i--);     // delay
+		}
+	}
 	return 0;
 }
 
