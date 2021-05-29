@@ -28,20 +28,28 @@ void init_button(unsigned char PORT, unsigned char PIN){
 }
 
 bool check_state(unsigned char PORT, unsigned char PIN){
-    
+    //clear_buzzer_pin();
+    //stop_timer_A();
+    //for(unsigned int i=100; i>0; i--);
     switch(PORT) {
        case 1 :
             if ((P1IN & PIN) != PIN){
-                for(unsigned int i=500; i>0; i--);     // delay
-                if ((P1IN & PIN) != PIN)
+                for(unsigned int i=300; i>0; i--);     // delay
+                if ((P1IN & PIN) != PIN){
+                    //init_buzzer();
+                    //for(unsigned int i=20; i>0; i--); 
                     return true;
+                }
             }
 
        case 2  :
             if ((P2IN & PIN) != PIN){
-                for(unsigned int i=500; i>0; i--);     // delay
-                if ((P2IN & PIN) != PIN)
+                for(unsigned int i=300; i>0; i--);     // delay
+                if ((P2IN & PIN) != PIN){
+                    //init_buzzer();
+                    //for(unsigned int i=100; i>0; i--); 
                     return true;
+                }
             }
     }
     return false;

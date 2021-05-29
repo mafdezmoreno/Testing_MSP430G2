@@ -38,46 +38,70 @@ void init_clocks(){
 void initTimer_A(void)
 {
     // TACCTL0, Capture/Compare Control Register
-    TACCTL0 |= CCIE; //Enable Interrupts on Timer
+    //TACCTL0 |= CCIE; //Enable Interrupts on Timer
 
     //TACCR0, Timer_A Capture/Compare Register 0
-    TACCR0 = 210; //Number of cycles in the timer
+    //TACCR0 = 210; //Number of cycles in the timer
             //125 / 25 = 5 kHz      //high-pitched sound
             //125 / 125 = 1 kHz  
             //125 / 250 = 0.5 kHz   
             //125 / 500 = 0.25 kHz  //bass sound
 
     // Timer_A Control Register
-    TACTL    |= TASSEL_2 + ID_1 + MC_1;
+    TACTL    |= TASSEL_2 + ID_1; //+ MC_1;
                                 //MC_1; //Use UP mode timer
                           //ID_1; //SMCLK/1
                 //TASSEL_2; //Use SMCLK as source for timer
 }
 
-void init_buzzer(unsigned char PORT, unsigned char PIN){
+void stop_timer_A(){
+    // Timer_A Control Register
+    TACTL    |= MC_0; // Stop mode
+    TACCTL0  &=~ CCIE; // Disable Interrupts on Timer
+}
 
-    switch(PORT) {
+void up_timer_A(){
+    TACCR0    = 210;
+    TACCTL0  |= CCIE;
+    TACTL    |= MC_1;
+}
+
+void init_buzzer(){
+
+    switch(BUZZER_PORT) {
        case 1 :
-          P1DIR |= PIN;
-          P1OUT |= PIN;
+          P1DIR |= BUZZER_PIN; //output
+          P1OUT &=~ BUZZER_PIN; //LOW state
           break;
 
        case 2  :
-          P2DIR |= PIN;
-          P2OUT |= PIN;
+          P2DIR |= BUZZER_PIN;
+          P2OUT &=~ BUZZER_PIN;
           break;
     }
 }
 
-void make_sound(unsigned char PORT, unsigned char PIN){
+void clear_buzzer_pin(){
+    switch(BUZZER_PORT) {
+       case 1 :
+          P1DIR &=~ BUZZER_PIN;
+          break;
 
-    switch(PORT) {
+       case 2  :
+          P2DIR &=~ BUZZER_PIN;
+          break;
+    }
+}
+
+void make_sound(){
+
+    switch(BUZZER_PORT) {
            case 1 :
-              P1OUT ^= PIN;
+              P1OUT ^= BUZZER_PIN;
               break;
 
            case 2  :
-              P2OUT ^= PIN;
+              P2OUT ^= BUZZER_PIN;
               break;
         }
 }

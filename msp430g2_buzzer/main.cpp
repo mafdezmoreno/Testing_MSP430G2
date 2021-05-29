@@ -7,6 +7,12 @@
  */
 
 //#include <msp430.h> 
+
+#define BUTTON_PORT	2
+#define BUTTON_PIN	BIT1
+#define BUZZER_PORT 2
+#define BUZZER_PIN BIT2
+
 #include "msp430g2452.h"
 #include "buzzer.h"
 #include "button.h"
@@ -18,20 +24,39 @@ int main(void)
 {
 	init_clocks();
 	initTimer_A();
-	init_buzzer(2, BIT2);  // (port, pin) PIN2.2
+	init_buzzer();  // (port, pin) PIN2.2
 	_bis_SR_register(GIE); //Enable interrupts
 
-	init_button(2, BIT1);  // (port, pin) PIN2.2
+	init_button(BUTTON_PORT, BUTTON_PIN);  // (port, pin) PIN2.2
 
 	while(true){
-		
-		if(check_state(2, BIT1)){
-			if(!buzzer_on)
-				buzzer_on = true;
-			else if (buzzer_on)
-				buzzer_on = false;
-			for(unsigned long int i=500; i>0; i--);     // delay
+		static bool checked = false;
+		static unsigned int delay_check = 10000;
+		if (!checked){
+			if(check_state(BUTTON_PORT, BUTTON_PIN)){
+				//stop_timer_A();
+				if(!buzzer_on){
+					buzzer_on = true;
+					up_timer_A();
+				}
+				else if (buzzer_on){
+					buzzer_on = false;
+					stop_timer_A();
+				}
+
+				checked = true;
+			}
+			
 		}
+		else{
+			delay_check--;
+			if (delay_check == 0){ 
+				delay_check = 10000;
+				checked = false;
+			}
+
+		}
+		//for(unsigned long int i=100; i>0; i--);     // delay
 	}
 	return 0;
 }
@@ -47,15 +72,15 @@ void TIMER0_A0_ISR( void )								//for GNU compiler
 		//example: 
 			// 600Hz interruption = 1,7 msec every interruption
 			// 200 interuptions at 600Hz = 0.33 sec of pause
-	if (buzzer_on){
+	//if (buzzer_on){
     	if (start < stop){
-			make_sound(2, BIT2); // (port, pin)
+			make_sound(); // (port, pin)
 			start++;
 		}
-		else if (start < 1.5*stop){
+		else if (start < 1.7*stop){
 			start ++;
 		}
 		else
 			start = 0;
-	}
+	//}
 }
