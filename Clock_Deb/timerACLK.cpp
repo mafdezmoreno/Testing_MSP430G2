@@ -34,21 +34,22 @@ void init_clocks(){ ////MCLK and SMCLK 1Mhz/8 = 125 kHz
 
 void initTimer0()
 {
-    // TACCTL0, Capture/Compare Control Register
+    // ACLK   = 32 768 Hz
+    // ACLK/8 =  4 096 Hz
+
+    //TACCTL0, Capture/Compare Control Register
     //TACCTL0 |= CCIE; //Enable Interrupts on Timer
 
     //TACCR0, Timer0_A Capture/Compare Register 0
-    //TACCR0 = 210; //Number of cycles in the timer
-            //125 / 25 = 5 kHz      //high-pitched sound
-            //125 / 125 = 1 kHz  
-            //125 / 250 = 0.5 kHz   
-            //125 / 500 = 0.25 kHz  //bass sound
+    //TACCR0 = 4 096; //Number of cycles in the timer
+            //4 096 / 4 096 = 1 kHz 
+ 
 
     // Timer0_A Control Register
-    TACTL    |= TASSEL_2 + ID_1; //+ MC_1;
+    TACTL    |= TASSEL_1 + ID_3; //+ MC_1;
                                 //MC_1; //Use UP mode timer
-                          //ID_1; //SMCLK/1
-                //TASSEL_2; //Use SMCLK as source for timer
+                          //ID_3; //SMCLK/8
+                //TASSEL_1; //Use ACLK as source for timer
 }
 
 void stop_timer0(){
@@ -58,7 +59,7 @@ void stop_timer0(){
 }
 
 void up_timer0(){
-    TACCR0    = 210;
+    TACCR0    = 4096;
     TACCTL0  |= CCIE;
     TACTL    |= MC_1;
 }

@@ -32,19 +32,17 @@ class Time_Clock
         std::string get_day(){
             return "31";
         }
-
-        std::string get_hour(){
-            return "11";
-        }
-
-        std::string get_minute(){
-            return "58";
-        }
-
+        const char * get_hour();
+        const char * get_minute();
         const char * get_second();
+
+        bool get_update_minute();
+        bool get_update_hour();
         
         // Normal operation of clock (increment time every second). To be called by the interrupt function
         void increment_second();
+
+
 
 private:
         unsigned int _year;
@@ -55,6 +53,9 @@ private:
         unsigned int  _minute;
         unsigned char  _second;
 
+        bool _update_minute;
+        bool _update_hour;
+
         const char * int_to_string(unsigned char value);
         void increment_minute();
         void increment_hour();
@@ -64,6 +65,8 @@ private:
         void increment_year();
         void set_time();
 
+        void update_minute();
+        void update_hour();
 };
 
 #endif /* TIME_H_ */
