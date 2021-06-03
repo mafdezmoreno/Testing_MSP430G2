@@ -33,9 +33,21 @@ class Time_Clock
         bool get_update_week();
         bool get_update_month_year(); //I use this for month & year
         
+        // ! MODIFIER FUNCTIONS
+        // To increment values
+
         // Normal operation of clock (increment time every second). To be called by the interrupt function
         void increment_second();
 
+        void increment_minute();
+        void increment_hour();
+        void increment_day();
+        void increment_week();
+        void increment_month();
+        void increment_year();
+        void set_time();
+
+        void decrement_hour();
 private:
 
         // Register variables
@@ -44,7 +56,7 @@ private:
         unsigned int _week;
         unsigned int _wday;
         unsigned int _nday;
-        unsigned int _hour;
+        int _hour;
         unsigned int _minute;
         unsigned char _second;
 
@@ -63,16 +75,6 @@ private:
  
 
         const char * int_to_string(unsigned char value);
-
-        // ! MODIFIER FUNCTIONS
-        // To increment values
-        void increment_minute();
-        void increment_hour();
-        void increment_day();
-        void increment_week();
-        void increment_month();
-        void increment_year();
-        void set_time();
 
         // To update status (to refesh value on lcd)
         void update_minute();

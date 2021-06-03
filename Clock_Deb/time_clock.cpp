@@ -55,6 +55,16 @@ void Time_Clock::increment_hour(){
         _hour = 0;
     }
 }
+
+void Time_Clock::decrement_hour(){
+    _hour--;
+    if (_hour <= 0){
+        //increment_day();
+        //update_day();
+        _hour = 23;
+    }
+}
+
 void Time_Clock::increment_day(){
     _nday++;
     _wday++;
