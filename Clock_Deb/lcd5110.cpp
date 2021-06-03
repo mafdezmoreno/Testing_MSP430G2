@@ -76,9 +76,15 @@ void writeCharToLCD(char c) {
     writeToLCD(LCD5110_DATA, 0);
 }
 
-void writeStringToLCD(const char *string) {
-    while(*string) {
-        writeCharToLCD(*string++);
+void writeStringToLCD(const char *string, int number_characters)
+{
+    int i = number_characters;
+    while(*string){
+        i--;
+        writeCharToLCD(*string);
+        if (i == 0)
+            return;
+        *string++;
     }
 }
 

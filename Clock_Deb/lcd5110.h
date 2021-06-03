@@ -45,7 +45,7 @@ public:
 
 void writeToLCD(unsigned char dataCommand, unsigned char data);
 void writeCharToLCD(char c);
-void writeStringToLCD(const char *string);
+void writeStringToLCD(const char *string, int number_characters);
 void initLCD();
 // Sets LCD address (x = 0..83, y = 0..5)
 void setAddr(unsigned char xAddr, unsigned char yAddr);
