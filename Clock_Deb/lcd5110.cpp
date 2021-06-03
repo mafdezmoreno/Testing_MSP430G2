@@ -52,7 +52,7 @@ void initLCD() {
     UCB0BR1 = 0;
     UCB0CTL1 &= ~UCSWRST;               // clear SW
 
-    __delay_cycles(500000);
+    __delay_cycles(50000);
 
     writeToLCD(LCD5110_COMMAND, PCD8544_FUNCTIONSET | PCD8544_EXTENDEDINSTRUCTION);
     writeToLCD(LCD5110_COMMAND, PCD8544_SETVOP | 0x3F);
@@ -61,10 +61,10 @@ void initLCD() {
     writeToLCD(LCD5110_COMMAND, PCD8544_FUNCTIONSET);
     writeToLCD(LCD5110_COMMAND, PCD8544_DISPLAYCONTROL | PCD8544_DISPLAYNORMAL);
 
-    __delay_cycles(2000000);
+    __delay_cycles(50000);
     clearLCD();
-    writeStringToLCD("iniciando...");
-    __delay_cycles(2000000);
+    //writeStringToLCD("iniciando...");
+   // __delay_cycles(2000000);
 
 }
 
