@@ -4,13 +4,16 @@
 *.project
 */.settings
 */Debug/*
-*/Release/*
+#*/Release/*
 /.jxbrowser-data/*
 */.launches/
 */targetConfigs/*
 *.cmd
 .DS_Store
 *.ccxml
+*.map
+*.ld
+.vscode
 
 
 # Prerequisites

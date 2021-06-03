@@ -21,8 +21,8 @@
 //      |                 |
 //      |              CLC|<-- Clock -------------------------------|J1.7   P1.5        |
 //      |              DIN|<-- Data Input --------------------------|J2.15  P1.7        |
-//      |               DC|<-- Data/Command (high/low) -------------|J1.3   P1.1        |
-//      |               CE|<-- Chip Enable (active low) ------------|J1.2   P1.0        |
+//      |               DC|<-- Data/Command (high/low) -------------|J1.3   P1.4        |
+//      |               CE|<-- Chip Enable (active low) ------------|J1.2   P1.6        |
 //      |              RST|<-- Reset -------------------------------|J2.16  RST
 //
 //

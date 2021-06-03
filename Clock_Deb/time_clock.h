@@ -57,11 +57,9 @@ private:
         bool _update_month_year; //I use this for month & year
 
         // constants
-        const char *wday[7] = { "LUNES", 
-                                "MARTES",
-                                "MIERCOLES",
-                                "JUEVES",
-                              "VIERNES", "SABADO", "DOMINGO"};
+        const char *wday[7] = { "LUNES", "MARTES",
+                                "MIERCOLES", "JUEVES",
+                                "VIERNES", "SABADO", "DOMINGO"};
  
 
         const char * int_to_string(unsigned char value);

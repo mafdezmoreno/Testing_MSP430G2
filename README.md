@@ -20,7 +20,9 @@ brew install mspdebug
 
 __To flash your mcu:__
 
+```
 mspdebug {your_programming_device} "prog {prog_project_name}.out"
+```
 
 to see the compatible programmers:
 
@@ -32,4 +34,4 @@ For example, to use a launchpad MSP430G2, the device is `rf2500`
 # Modules Tested
 ## LCD 
 
-![LCD](https://user-images.githubusercontent.com/59566401/118188355-8bb91000-b440-11eb-8df8-2395e373d330.JPG)
+ms![LCD](https://user-images.githubusercontent.com/59566401/118188355-8bb91000-b440-11eb-8df8-2395e373d330.JPG)

@@ -1,4 +1,4 @@
-# Buzzer controled by Button an Timer
+# Buzzer controlled by Button and Timer
 
 Example of how to activate and deactivate a timer controlled buzzer using a msp430 mcu.
 

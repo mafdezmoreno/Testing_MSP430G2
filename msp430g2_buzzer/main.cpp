@@ -9,9 +9,9 @@
 //#include <msp430.h> 
 
 #define BUTTON_PORT	2
-#define BUTTON_PIN	BIT1
+#define BUTTON_PIN	BIT0
 #define BUZZER_PORT 2
-#define BUZZER_PIN BIT2
+#define BUZZER_PIN BIT1
 
 #include "msp430g2452.h"
 #include "buzzer.h"
