@@ -54,13 +54,12 @@ For example, to use a launchpad MSP430G2, the device is `rf2500`
 
 ## 5110 Display
 ![](images/5110.jpeg)
-[Link to code](https://github.com/mafdezmoreno/Testing_MSP430G2/tree/main/lcd_5110_msp430g2)
+[Link to code](https://github.com/mafdezmoreno/Testing_MSP430G2/tree/main/lcd5110)
 
 ## 5110 Display + DHT
-https://github.com/mafdezmoreno/Testing_MSP430G2/tree/main/dht_5110_msp430g2
+[Link to code](https://github.com/mafdezmoreno/Testing_MSP430G2/tree/main/lcd5110dht)
 
 ## LCD
-![LCD](https://user-images.githubusercontent.com/59566401/118188355-8bb91000-b440-11eb-8df8-2395e373d330.JPG)
 [Link to code](https://github.com/mafdezmoreno/Testing_MSP430G2/tree/main/LCD_Test_MSP430G2454)
 
 ## Low Frequency External Clock
