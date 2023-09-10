@@ -1,7 +1,52 @@
 #include "lcd.h"
 
+lcd::lcd()
+{
+    initLcd();
+    P2OUT &= ~DISPLAY_LED_BIT;  // Drain current for display light
+    P2DIR |= DISPLAY_LED_BIT;
+    setAddr(0, 0);
+    writeStringToLcd("Hola", 5);
+    pDht = new dht;
+}
 
-void writeToLcd(unsigned char dataCommand, unsigned char data)
+lcd::~lcd()
+{
+    delete pDht;
+}
+
+void lcd::printDht()
+{
+    const unsigned msPause = 500;
+    static char counter = '0';
+    const char * str;
+
+    if (!pDht->readDht())
+    {
+        msWait(&msPause);
+        return;
+    }
+
+    str = pDht->getHumidity();
+    setAddr(0, 1);
+    writeStringToLcd(str, 4);
+    delete[] str;
+
+    str = pDht-> getTemperature();
+    setAddr(0, 2);
+    writeStringToLcd(str, 5);
+    delete[] str;
+
+    setAddr(40, 0);
+    writeStringToLcd(&counter, 1);
+    counter++;
+    if (counter > '9')
+    {
+        counter = '0';
+    }
+}
+
+void lcd::writeToLcd(unsigned char dataCommand, unsigned char data)
 {
     LCD5110_SELECT;
 
@@ -19,7 +64,7 @@ void writeToLcd(unsigned char dataCommand, unsigned char data)
     LCD5110_DESELECT;
 }
 
-void initLcd()
+void lcd::initLcd()
 {
 
     P1OUT |= LCD5110_SCE_PIN | LCD5110_DC_PIN;  // Disable LCD, set Data mode
@@ -48,7 +93,7 @@ void initLcd()
     clearLcd();
 }
 
-void writeCharToLcd(char c)
+void lcd::writeCharToLcd(char c)
 {
     unsigned char i;
     for (i = 0; i < 5; i++)
@@ -59,7 +104,7 @@ void writeCharToLcd(char c)
     writeToLcd(LCD5110_DATA, 0);
 }
 
-void writeStringToLcd(const char *string, int numberCharacters)
+void lcd::writeStringToLcd(const char *string, int numberCharacters)
 {
     int i = numberCharacters;
     while (*string)
@@ -72,13 +117,13 @@ void writeStringToLcd(const char *string, int numberCharacters)
     }
 }
 
-void setAddr(unsigned char xAddr, unsigned char yAddr)
+void lcd::setAddr(unsigned char xAddr, unsigned char yAddr)
 {
     writeToLcd(LCD5110_COMMAND, PCD8544_SETXADDR | xAddr);
     writeToLcd(LCD5110_COMMAND, PCD8544_SETYADDR | yAddr);
 }
 
-void clearBank(unsigned char bank)
+void lcd::clearBank(unsigned char bank)
 {
     setAddr(0, bank);
     int i = 0;
@@ -90,7 +135,7 @@ void clearBank(unsigned char bank)
     setAddr(0, bank);
 }
 
-void clearLcd()
+void lcd::clearLcd()
 {
     setAddr(0, 0);
     int i = 0;

@@ -21,22 +21,30 @@
 #define CLR(x,y)	(x &= ~(y))
 #define TOG(x,y)	(x ^= (y))
 
-void startSignal();
-unsigned char checkResponse();
-unsigned char readByte();
-unsigned char readData(unsigned char * data);
-bool checkChecksum(unsigned char *);	//Pass an array with 5 elements
-bool readDht();
-const char * getHumidity();
-const char * getTemperature();
+class dht
+{
+public:
+    dht();
+    bool readDht();
+    const char * getHumidity();
+    const char * getTemperature();
+
+private:
+    unsigned char checksum;
+    unsigned char data[5];
+
+    unsigned char readData(unsigned char * data);
+    void startSignal();
+    unsigned char checkResponse();
+    unsigned char readByte();
+    bool checkChecksum(unsigned char *);
+};
 
 void usWait(const unsigned * usDelay);
 void msWait(const unsigned * msDelay);
 void usInitTimer1(const unsigned * us);
 void msInitTimer1(const unsigned * ms);
-
 void usInitTimer0(const unsigned * us);
-
 void secInitTimer0(const unsigned * sec);
 
 void upModeTimer0();

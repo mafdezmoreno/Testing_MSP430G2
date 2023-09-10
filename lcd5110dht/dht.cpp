@@ -7,8 +7,6 @@
 
 #include "dht.h"
 
-unsigned char checksum;
-unsigned char data[5];
 bool volatile timeOut0;
 bool volatile timeOut1;
 
@@ -32,92 +30,6 @@ __interrupt void dhtTimer(void)
     stopTimer1();
 }
 
-bool readDht(){
-
-    static unsigned oneSec = 1000;
-    msWait(&oneSec);
-    readData(data);
-    if (checkChecksum(data))
-    {
-        return true;
-    }
-    return false;
-}
-
-unsigned char readData(unsigned char * data)
-{
-    startSignal();
-    if (checkResponse()){
-        //Cannot be done with a for loop!
-        data[0] = readByte();
-        data[1] = readByte();
-        data[2] = readByte();
-        data[3] = readByte();
-        data[4] = readByte();
-        return 1;
-    }
-    else return 0;
-}
-
-void startSignal()
-{
-    unsigned wait1 = 20;
-    unsigned wait2 = 30;
-    SET(P2DIR, DHT_PIN);		// Set Data pin to output direction
-    CLR(P2OUT,DHT_PIN); 		// Low for at least 18ms
-    msWait(&wait1);
-    SET(P2OUT,DHT_PIN);        // High for at 20us-40us
-    usWait(&wait2);
-    CLR(P2DIR,DHT_PIN);		// Set data pin to input direction
-}
-
-unsigned char checkResponse()
-{
-    unsigned wait = 100;
-    usInitTimer1(&wait);
-    while(!(TST(P2IN,DHT_PIN)) && !timeOut1);
-    if (timeOut1)
-    {
-        return 0;
-    }
-    else
-    {
-        usInitTimer1(&wait);
-        while((TST(P2IN,DHT_PIN)) && !timeOut1);
-        if(timeOut1)
-        {
-            return 0;
-        }
-        else
-        {
-            stopTimer1();
-            //CLR(TA1CCTL0,CCIE);	// Disable timer interrupt
-            return 1;
-        }
-    }
-}
-
-unsigned char readByte()
-{
-    unsigned char num = 0;
-    unsigned char i;
-    unsigned interruptIn = 100;
-    for (i=8; i>0; i--){
-        while(!(TST(P2IN,DHT_PIN))); //Wait for signal to go high
-        //usInitTimer0(&interruptIn);
-        usInitTimer1(&interruptIn);
-        while(TST(P2IN,DHT_PIN)); //Wait for signal to go low
-        //CLR(TA0CTL,0x30); //Halt Timer
-        CLR(TA1CTL,0x30); //Halt Timer
-        //if (TAR > 13)	 //40 @ 1x divider
-        if (TA1R > 13)	 //40 @ 1x divider
-        {
-            num |= 1 << (i-1);
-        }
-    }
-    return num;
-}
-
 void usInitTimer0(const unsigned * us)
 {
     TA0CCR0  = (unsigned)((*us)/4);          // Count up to limit
@@ -136,31 +48,6 @@ void usInitTimer1(const unsigned * us)
     TA1CCTL0 |= CCIE;          // Enable interrupt
 }
 
-bool checkChecksum(unsigned char *data){
-    if (data[4] != (data[0] + data[1] + data[2] + data[3])){
-        return false;
-    }
-    return true;
-}
-
-const char * getTemperature()
-{
-    char * str;
-    str = new char[6] {"00.0C"};
-    str[0] = data[2]/10 + '0';
-    str[1] = data[2]%10 + '0';
-    str[3] = data[3]%10 + '0';
-    return str;
-}
-
-const char * getHumidity()
-{
-    char * str;
-    str = new char[5] {"00HR"};
-    str[0] = data[0]/10 + '0';
-    str[1] = data[0]%10 + '0';
-    return str;
-}
 
 //void secInitTimer0(const unsigned * sec)
 //{
@@ -228,4 +115,122 @@ void upModeTimer1()
 {
     TA1CTL |= MC_1;
     TA1CCTL0 |= CCIFG;   // To enable interrupts
+}
+
+dht::dht()
+{
+    P2OUT |= BIT_DHT_VCC;       // VCC to dht
+    P2DIR |= BIT_DHT_VCC;
+}
+
+bool dht::readDht(){
+
+    static unsigned oneSec = 1000;
+    msWait(&oneSec);
+    readData(data);
+    if (checkChecksum(data))
+    {
+        return true;
+    }
+    return false;
+}
+
+const char * dht::getTemperature()
+{
+    char * str;
+    str = new char[6] {"00.0C"};
+    str[0] = data[2]/10 + '0';
+    str[1] = data[2]%10 + '0';
+    str[3] = data[3]%10 + '0';
+    return str;
+}
+
+const char * dht::getHumidity()
+{
+    char * str;
+    str = new char[5] {"00HR"};
+    str[0] = data[0]/10 + '0';
+    str[1] = data[0]%10 + '0';
+    return str;
+}
+
+unsigned char dht::readData(unsigned char * data)
+{
+    startSignal();
+    if (checkResponse()){
+        //Cannot be done with a for loop!
+        data[0] = readByte();
+        data[1] = readByte();
+        data[2] = readByte();
+        data[3] = readByte();
+        data[4] = readByte();
+        return 1;
+    }
+    else return 0;
+}
+
+void dht::startSignal()
+{
+    unsigned wait1 = 20;
+    unsigned wait2 = 30;
+    SET(P2DIR, DHT_PIN);		// Set Data pin to output direction
+    CLR(P2OUT,DHT_PIN); 		// Low for at least 18ms
+    msWait(&wait1);
+    SET(P2OUT,DHT_PIN);        // High for at 20us-40us
+    usWait(&wait2);
+    CLR(P2DIR,DHT_PIN);		// Set data pin to input direction
+}
+
+unsigned char dht::checkResponse()
+{
+    unsigned wait = 100;
+    usInitTimer1(&wait);
+    while(!(TST(P2IN,DHT_PIN)) && !timeOut1);
+    if (timeOut1)
+    {
+        return 0;
+    }
+    else
+    {
+        usInitTimer1(&wait);
+        while((TST(P2IN,DHT_PIN)) && !timeOut1);
+        if(timeOut1)
+        {
+            return 0;
+        }
+        else
+        {
+            stopTimer1();
+            //CLR(TA1CCTL0,CCIE);	// Disable timer interrupt
+            return 1;
+        }
+    }
+}
+
+unsigned char dht::readByte()
+{
+    unsigned char num = 0;
+    unsigned char i;
+    unsigned interruptIn = 100;
+    for (i=8; i>0; i--){
+        while(!(TST(P2IN,DHT_PIN))); //Wait for signal to go high
+        //usInitTimer0(&interruptIn);
+        usInitTimer1(&interruptIn);
+        while(TST(P2IN,DHT_PIN)); //Wait for signal to go low
+        //CLR(TA0CTL,0x30); //Halt Timer
+        CLR(TA1CTL,0x30); //Halt Timer
+        //if (TAR > 13)	 //40 @ 1x divider
+        if (TA1R > 13)	 //40 @ 1x divider
+        {
+            num |= 1 << (i-1);
+        }
+    }
+    return num;
+}
+
+bool dht::checkChecksum(unsigned char *data){
+    if (data[4] != (data[0] + data[1] + data[2] + data[3])){
+        return false;
+    }
+    return true;
 }
