@@ -8,6 +8,9 @@ lcd::lcd()
     setAddr(0, 0);
     writeStringToLcd("Hola", 5);
     pDht = new dht;
+    msWait(&msPause);
+    strcpy (lastTemperature, "00.0C");
+    strcpy (lastHumidity, "HR00%");
 }
 
 lcd::~lcd()
@@ -17,9 +20,7 @@ lcd::~lcd()
 
 void lcd::printDht()
 {
-    const unsigned msPause = 500;
     static char counter = '0';
-    const char * str;
 
     if (!pDht->readDht())
     {
@@ -27,19 +28,19 @@ void lcd::printDht()
         return;
     }
 
-    str = pDht->getHumidity();
-    setAddr(0, 1);
-    writeStringToLcd(str, 4);
-    delete[] str;
+    msWait(&msPause);
+    updateMeasures();
 
-    str = pDht-> getTemperature();
+    setAddr(0, 1);
+    writeStringToLcd(lastHumidity, 5);
+
     setAddr(0, 2);
-    writeStringToLcd(str, 5);
-    delete[] str;
+    writeStringToLcd(lastTemperature, 5);
 
     setAddr(40, 0);
     writeStringToLcd(&counter, 1);
     counter++;
+
     if (counter > '9')
     {
         counter = '0';
@@ -145,4 +146,16 @@ void lcd::clearLcd()
         i++;
     }
     setAddr(0, 0);
+}
+void lcd::updateMeasures()
+{
+    const char * str;
+
+    str = pDht->getHumidity();
+    strcpy(lastHumidity, str);
+    delete[] str;
+
+    str = pDht-> getTemperature();
+    strcpy(lastTemperature, str);
+    delete[] str;
 }

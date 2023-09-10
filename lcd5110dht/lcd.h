@@ -23,6 +23,7 @@
 #include "msp430g2553.h"
 #include "PCD8544.h"
 #include "dht.h"
+#include "string.h"
 
 #define LCD5110_SCLK_PIN            BIT5
 #define LCD5110_DN_PIN              BIT7
@@ -45,7 +46,13 @@ public:
     void printDht();
 
 private:
+    const unsigned msPause = 500;
+    char lastTemperature[6];
+    char lastHumidity[6];
     dht * pDht;
+
+    void updateMeasures();
+
     void initLcd();
     void writeToLcd(unsigned char dataCommand, unsigned char data);
     void writeCharToLcd(char c);
