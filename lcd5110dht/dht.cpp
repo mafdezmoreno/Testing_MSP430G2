@@ -12,29 +12,59 @@ dht::dht()
 {
     P2OUT |= BIT_DHT_VCC;       // VCC to dht
     P2DIR |= BIT_DHT_VCC;
+    humiDigits[0] = '0';
+    humiDigits[1] = '0';
+    tempDigits[0] = '0';
+    tempDigits[1] = '0';
+    tempDigits[2] = '0';
 }
 
 bool dht::readDht()
 {
 
-    static unsigned oneSec = 1000;
+    static unsigned oneSec = 3000;
+    unsigned char tmpData[5];
+    unsigned char digits[5];
+
     msWait(&oneSec);
-    readData(data);
-//    if (checkChecksum(data))
-//    {
-//        return true;
-//    }
-//    return false;
-    return true;
+    readData(tmpData);
+
+    if (checkChecksum(tmpData))
+    {
+        digits[0] = tmpData[0] / 10 + '0';
+        digits[1] = tmpData[0] % 10 + '0';
+        digits[2] = tmpData[2] / 10 + '0';
+        digits[3] = tmpData[2] % 10 + '0';
+        digits[4] = tmpData[3] % 10 + '0';
+
+        for (int i=0; i<5; i++)
+        {
+            if ( digits[0] >= '0' && digits[0] <= '9')
+            {
+                continue;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        humiDigits[0] = digits[0];
+        humiDigits[1] = digits[1];
+        tempDigits[0] = digits[2];
+        tempDigits[1] = digits[3];
+        tempDigits[2] = digits[4];
+        return true;
+    }
+    return false;
 }
 
 const char *dht::getTemperature()
 {
     char *str;
     str = new char[6]{"00.0C"};
-    str[0] = data[2] / 10 + '0';
-    str[1] = data[2] % 10 + '0';
-    str[3] = data[3] % 10 + '0';
+    str[0] = tempDigits[0];
+    str[1] = tempDigits[1];
+    str[3] = tempDigits[2];
     return str;
 }
 
@@ -42,8 +72,8 @@ const char *dht::getHumidity()
 {
     char *str;
     str = new char[6]{"HR00%"};
-    str[2] = data[0] / 10 + '0';
-    str[3] = data[0] % 10 + '0';
+    str[2] = humiDigits[0];
+    str[3] = humiDigits[1];
     return str;
 }
 
@@ -120,12 +150,11 @@ unsigned char dht::readByte()
     return num;
 }
 
-//bool dht::checkChecksum(unsigned char *data)
-//{
-//// Not working
-////    if (data[4] != (data[0] + data[1] + data[2] + data[3]))
-////    {
-////        return false;
-////    }
-//    return true;
-//}
+bool dht::checkChecksum(unsigned char * tmp)
+{
+    if (tmp[4] != (tmp[0] + tmp[1] + tmp[2] + tmp[3]))
+    {
+        return false;
+    }
+    return true;
+}

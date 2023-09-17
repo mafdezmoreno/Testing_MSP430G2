@@ -32,8 +32,10 @@ void lcd::printDht()
         counter = '0';
     }
 
-    refD.readDht();
-    msWait(&msPause);
+    if (!refD.readDht())
+    {
+        return;
+    }
     updateMeasures();
     refresh();
 }

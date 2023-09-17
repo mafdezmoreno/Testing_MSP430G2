@@ -28,13 +28,14 @@ public:
 
 private:
     unsigned char checksum;
-    unsigned char data[5];
+    unsigned char tempDigits[3];
+    unsigned char humiDigits[2];
 
     unsigned char readData(unsigned char * data);
     void startSignal();
     unsigned char checkResponse();
     unsigned char readByte();
-    bool checkChecksum(unsigned char *);
+    bool checkChecksum(unsigned char * tmp);
 };
 
 #endif /* DHT_H_ */
