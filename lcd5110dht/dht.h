@@ -2,7 +2,7 @@
  * Based on https://github.com/bafeigum/DHT11-Library-for-MSP430/tree/master from Bryce Feigum
  * Changes:
  * * Improved with encapsulations.
- * * Replaced callbacks to timer 0 wiht timer 1. Included functions and methods to use both.
+ * * Replaced callbacks to timer 0 with timer 1. Included functions and methods to use both.
  */
 
 #ifndef DHT_H_
@@ -19,7 +19,6 @@
 #define TST(x,y)	(x & (y))
 #define SET(x,y)	(x|= (y))
 #define CLR(x,y)	(x &= ~(y))
-#define TOG(x,y)	(x ^= (y))
 
 class dht
 {
@@ -39,17 +38,5 @@ private:
     unsigned char readByte();
     bool checkChecksum(unsigned char *);
 };
-
-void usWait(const unsigned * usDelay);
-void msWait(const unsigned * msDelay);
-void usInitTimer1(const unsigned * us);
-void msInitTimer1(const unsigned * ms);
-void usInitTimer0(const unsigned * us);
-void secInitTimer0(const unsigned * sec);
-
-void upModeTimer0();
-void upModeTimer1();
-void stopTimer0();
-void stopTimer1();
 
 #endif /* DHT_H_ */

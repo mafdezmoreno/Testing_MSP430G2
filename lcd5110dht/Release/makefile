@@ -11,6 +11,7 @@ ORDERED_OBJS += \
 "./dht.obj" \
 "./lcd.obj" \
 "./main.obj" \
+"./timer.obj" \
 "../lnk_msp430g2553.cmd" \
 $(GEN_CMDS__FLAG) \
 -llibc.a \
@@ -154,8 +155,8 @@ lcd5110dht.txt: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "dht.obj" "lcd.obj" "main.obj" 
-	-$(RM) "dht.d" "lcd.d" "main.d" 
+	-$(RM) "dht.obj" "lcd.obj" "main.obj" "timer.obj" 
+	-$(RM) "dht.d" "lcd.d" "main.d" "timer.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

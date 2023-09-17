@@ -1,4 +1,5 @@
 #include "lcd.h"
+#include "timer.h"
 
 lcd::lcd()
 {
@@ -22,6 +23,15 @@ void lcd::printDht()
 {
     static char counter = '0';
 
+    setAddr(40, 0);
+    writeStringToLcd(&counter, 1);
+    counter++;
+
+    if (counter > '9')
+    {
+        counter = '0';
+    }
+
     if (!pDht->readDht())
     {
         msWait(&msPause);
@@ -36,15 +46,6 @@ void lcd::printDht()
 
     setAddr(0, 2);
     writeStringToLcd(lastTemperature, 5);
-
-    setAddr(40, 0);
-    writeStringToLcd(&counter, 1);
-    counter++;
-
-    if (counter > '9')
-    {
-        counter = '0';
-    }
 }
 
 void lcd::writeToLcd(unsigned char dataCommand, unsigned char data)

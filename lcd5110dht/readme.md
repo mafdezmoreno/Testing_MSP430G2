@@ -4,4 +4,4 @@ Encapsulated dht version, from Bryce Feigum, with the possibility of choose betw
 
 Connections to microcontroller are in the heads of lcd.h and dht.h
 
-Tested with msp430g22553 working at 3.3V and 5V. The lower voltaje (3.3V) can block some times the interruptions. I recomed work with 5volt to avoid problems.
+Tested with msp430g22553 working at 3.3V and 5V. The lower voltage (3.3V) can block some times the dht readings. I recommend work with 5volt to avoid problems.
