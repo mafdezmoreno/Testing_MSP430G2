@@ -101,17 +101,16 @@ unsigned char dht::readByte()
 {
     unsigned char num = 0;
     unsigned char i;
-    unsigned interruptIn = 100;
+    unsigned interruptIn = 90;
+
     for (i = 8; i > 0; i--)
     {
-        while (!(TST(P2IN, DHT_PIN))); //Wait for signal to go high
-        //usInitTimer0(&interruptIn);
+        while (!(TST(P2IN, DHT_PIN)));//Wait for signal to go high
         usInitTimer(&interruptIn);
-        while (TST(P2IN, DHT_PIN)); //Wait for signal to go low
-        //CLR(TA0CTL,0x30); //Halt Timer
-        CLR(TA1CTL, 0x30); //Halt Timer
-        //if (TAR > 13)	 //40 @ 1x divider
-        if (TA1R > 13)     //40 @ 1x divider
+        while (TST(P2IN, DHT_PIN)) //Wait for signal to go low
+        {
+            if(timeOut()) break;
+        }
         CLR(TA0CTL, 0x30); //Halt Timer
         if (TA0R > 11)     //40 @ 1x divider
         {
