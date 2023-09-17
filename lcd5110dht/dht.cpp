@@ -20,11 +20,12 @@ bool dht::readDht()
     static unsigned oneSec = 1000;
     msWait(&oneSec);
     readData(data);
-    if (checkChecksum(data))
-    {
-        return true;
-    }
-    return false;
+//    if (checkChecksum(data))
+//    {
+//        return true;
+//    }
+//    return false;
+    return true;
 }
 
 const char *dht::getTemperature()
@@ -76,22 +77,21 @@ void dht::startSignal()
 unsigned char dht::checkResponse()
 {
     unsigned wait = 100;
-    usInitTimer1(&wait);
-    while (!(TST(P2IN, DHT_PIN)) && !timeOut());
-    if (timeOut())
+    usInitTimer(&wait);
+    while (!(TST(P2IN, DHT_PIN)) && !(timeOut()));
+    if ((timeOut()))
     {
         return 0;
     } else
     {
-        usInitTimer1(&wait);
-        while ((TST(P2IN, DHT_PIN)) && !timeOut());
-        if (timeOut())
+        usInitTimer(&wait);
+        while ((TST(P2IN, DHT_PIN)) && !(timeOut()));
+        if ((timeOut()))
         {
             return 0;
         } else
         {
-            stopTimer1();
-            //CLR(TA1CCTL0,CCIE);	// Disable timer interrupt
+            stopTimer();
             return 1;
         }
     }
@@ -106,7 +106,7 @@ unsigned char dht::readByte()
     {
         while (!(TST(P2IN, DHT_PIN))); //Wait for signal to go high
         //usInitTimer0(&interruptIn);
-        usInitTimer1(&interruptIn);
+        usInitTimer(&interruptIn);
         while (TST(P2IN, DHT_PIN)); //Wait for signal to go low
         //CLR(TA0CTL,0x30); //Halt Timer
         CLR(TA1CTL, 0x30); //Halt Timer
@@ -119,11 +119,12 @@ unsigned char dht::readByte()
     return num;
 }
 
-bool dht::checkChecksum(unsigned char *data)
-{
-    if (data[4] != (data[0] + data[1] + data[2] + data[3]))
-    {
-        return false;
-    }
-    return true;
-}
+//bool dht::checkChecksum(unsigned char *data)
+//{
+//// Not working
+////    if (data[4] != (data[0] + data[1] + data[2] + data[3]))
+////    {
+////        return false;
+////    }
+//    return true;
+//}

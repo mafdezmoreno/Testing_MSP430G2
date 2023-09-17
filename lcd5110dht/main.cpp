@@ -1,5 +1,6 @@
 #include "msp430g2553.h"
 #include "lcd.h"
+#include "dht.h"
 
 void initMcu()
 {
@@ -14,7 +15,8 @@ void initMcu()
 int main()
 {
     initMcu();
-    lcd lcd;
+    dht d;
+    lcd lcd(d);
 
     while(1)
     {

@@ -1,11 +1,6 @@
 
 #include "timer.h"
 
-void stopTimer0()
-{
-    TA0CTL &= ~MC_3;
-    CLR (TA0CCTL0, CCIE);
-
 bool timeOut()
 {
     return (TA1CTL & MC_1) == 0x00;
@@ -17,7 +12,8 @@ bool timeOut()
 #pragma vector = TIMER0_A0_VECTOR
 __interrupt void ccr0Isr(void)
 {
-    stopTimer0();
+    TA0CTL &= ~MC_3;
+    CLR (TA0CCTL0, CCIE);
 }
 
 /// To use in delays. Auto stopped after call
@@ -28,16 +24,7 @@ __interrupt void dhtTimer(void)
     CLR (TA1CCTL0, CCIE);
 }
 
-
-void usInitTimer0(const unsigned *us)
-{
-    TA0CCR0 = (unsigned) ((*us) / 4);          // Count up to limit
-    TA0CTL |= TASSEL_2 + ID_2 + MC_1 + TACLR;
-    // SMCLK, div 4, up mode, restart, enable interrup
-    TA0CCTL0 |= CCIE;
-}
-
-void usInitTimer1(const unsigned *us)
+void usInitTimer(const unsigned *us)
 {
     TA1CCR0 = (unsigned) ((*us) / 4);          // Count up to limit
     //TA1CTL = TASSEL_2 | MC_1 | TACLR;
@@ -46,15 +33,7 @@ void usInitTimer1(const unsigned *us)
     TA1CCTL0 |= CCIE;          // Enable interrupt
 }
 
-
-//void secInitTimer0(const unsigned * sec)
-//{
-//    TA0CCR0 = (unsigned long) (50000 * (*sec));
-//    TA0CCTL0 = CCIE;				            // Enable interrupt
-//    TA0CTL = TASSEL_2 + ID_2 + MC_1 + TACLR;	// SMCLK, div 4, up mode, restart
-//}
-
-void msInitTimer1(const unsigned *ms)
+void msInitTimer(const unsigned *ms)
 {
     // TA1CTL |= TASSEL_1;     // ACLK as source (Current 32768Hz)
     // TA1CTL |= ID_3;         // DIV by 8 the prev source (Current 4096 Hz)
@@ -67,7 +46,7 @@ void msInitTimer1(const unsigned *ms)
 
 void msWait(const unsigned *msDelay)
 {
-    msInitTimer1(msDelay);
+    msInitTimer(msDelay);
     while (true)
     {
         if ((TA1CTL & MC_1) == 0x00)
@@ -79,7 +58,7 @@ void msWait(const unsigned *msDelay)
 
 void usWait(const unsigned *usDelay)
 {
-    usInitTimer1(usDelay);
+    usInitTimer(usDelay);
     while (true)
     {
         if (timeOut())
@@ -89,21 +68,8 @@ void usWait(const unsigned *usDelay)
     }
 }
 
-
-//void timer1::upModeTimer0()
-//{
-//    TA0CTL |= MC_1;
-//    TA0CCTL0 |= CCIFG;   // To enable interrupts
-//}
-
-void upModeTimer1()
+void stopTimer()
 {
-    TA1CTL |= MC_1;
-    TA1CCTL0 |= CCIFG;   // To enable interrupts
-}
-
-void stopTimer1()
-{
-    TA1CTL &= ~MC_3;         // Stop mode to conserve power
-    CLR (TA1CCTL0, CCIFG);   // To allow other interrupts
+    TA1CTL &= ~MC_3;
+    CLR (TA1CCTL0, CCIE);
 }

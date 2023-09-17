@@ -41,7 +41,7 @@
 class lcd
 {
 public:
-    lcd();
+    lcd(dht& refD);
     ~lcd();
     void printDht();
 
@@ -49,7 +49,7 @@ private:
     const unsigned msPause = 500;
     char lastTemperature[6];
     char lastHumidity[6];
-    dht * pDht;
+    dht & refD;
 
     void updateMeasures();
     void refresh();

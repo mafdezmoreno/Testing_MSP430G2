@@ -11,9 +11,7 @@
 #include "msp430g2553.h"
 
 #define DHT_PIN BIT3
-
 #define BIT_DHT_VCC BIT2
-
 #define DISPLAY_LED_BIT BIT5
 
 #define TST(x,y)	(x & (y))
