@@ -165,7 +165,7 @@ upload:
 	$(MAKE) clean
 	$(MAKE) lcd5110dht.out
 	$(MAKE) lcd5110dht.txt
-	MSP430Flasher -w lcd5110dht.txt -z [VCC]
+	MSP430Flasher -e ERASE_ALL -w lcd5110dht.txt -v -z [VCC=3600]
 
 
 secondary-outputs: $(BIN_OUTPUTS)
