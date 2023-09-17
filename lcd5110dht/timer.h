@@ -22,6 +22,7 @@ void usInitTimer1(const unsigned * us);
 void msInitTimer1(const unsigned * ms);
 void usInitTimer0(const unsigned * us);
 void secInitTimer0(const unsigned * sec);
+bool timeOut();
 
 void upModeTimer0();
 void upModeTimer1();

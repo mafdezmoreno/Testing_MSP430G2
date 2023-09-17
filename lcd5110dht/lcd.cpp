@@ -9,9 +9,10 @@ lcd::lcd()
     setAddr(0, 0);
     writeStringToLcd("Hola", 5);
     pDht = new dht;
-    msWait(&msPause);
     strcpy (lastTemperature, "00.0C");
     strcpy (lastHumidity, "HR00%");
+    refresh();
+    msWait(&msPause);
 }
 
 lcd::~lcd()
@@ -40,7 +41,11 @@ void lcd::printDht()
 
     msWait(&msPause);
     updateMeasures();
+    refresh();
+}
 
+void lcd::refresh()
+{
     setAddr(0, 1);
     writeStringToLcd(lastHumidity, 5);
 

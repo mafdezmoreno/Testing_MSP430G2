@@ -52,6 +52,7 @@ private:
     dht * pDht;
 
     void updateMeasures();
+    void refresh();
 
     void initLcd();
     void writeToLcd(unsigned char dataCommand, unsigned char data);

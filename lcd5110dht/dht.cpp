@@ -77,15 +77,15 @@ unsigned char dht::checkResponse()
 {
     unsigned wait = 100;
     usInitTimer1(&wait);
-    while (!(TST(P2IN, DHT_PIN)) && !timeOut1);
-    if (timeOut1)
+    while (!(TST(P2IN, DHT_PIN)) && !timeOut());
+    if (timeOut())
     {
         return 0;
     } else
     {
         usInitTimer1(&wait);
-        while ((TST(P2IN, DHT_PIN)) && !timeOut1);
-        if (timeOut1)
+        while ((TST(P2IN, DHT_PIN)) && !timeOut());
+        if (timeOut())
         {
             return 0;
         } else
