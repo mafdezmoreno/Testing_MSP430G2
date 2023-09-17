@@ -3,7 +3,7 @@
 
 bool timeOut()
 {
-    return (TA1CTL & MC_1) == 0x00;
+    return (TA0CTL & MC_1) == 0x00;
 }
 
 /// Not used
@@ -26,22 +26,22 @@ __interrupt void dhtTimer(void)
 
 void usInitTimer(const unsigned *us)
 {
-    TA1CCR0 = (unsigned) ((*us) / 4);          // Count up to limit
-    //TA1CTL = TASSEL_2 | MC_1 | TACLR;
-    TA1CTL = TASSEL_2 + ID_2 + MC_1 + TACLR;
+    TA0CCR0 = (unsigned) ((*us) / 4);          // Count up to limit
+    //TA0CTL = TASSEL_2 | MC_1 | TACLR;
+    TA0CTL = TASSEL_2 + ID_2 + MC_1 + TACLR;
     // SMCLK, div 4, up mode, restart
-    TA1CCTL0 |= CCIE;          // Enable interrupt
+    TA0CCTL0 |= CCIE;          // Enable interrupt
 }
 
 void msInitTimer(const unsigned *ms)
 {
-    // TA1CTL |= TASSEL_1;     // ACLK as source (Current 32768Hz)
-    // TA1CTL |= ID_3;         // DIV by 8 the prev source (Current 4096 Hz)
-    // TA1CTL |= MC_1;         // Count Up mode
-    // TA1CTL |= TACLR;        // Reset timer
-    TA1CCTL0 |= CCIE;          // Enable interrupt
-    TA1CCR0 = (*ms) * 5;          // Count up to limit
-    TA1CTL = TASSEL_1 | ID_3 | MC_1 | TACLR;
+    // TA0CTL |= TASSEL_1;     // ACLK as source (Current 32768Hz)
+    // TA0CTL |= ID_3;         // DIV by 8 the prev source (Current 4096 Hz)
+    // TA0CTL |= MC_1;         // Count Up mode
+    // TA0CTL |= TACLR;        // Reset timer
+    TA0CCTL0 |= CCIE;          // Enable interrupt
+    TA0CCR0 = (*ms) * 5;          // Count up to limit
+    TA0CTL = TASSEL_1 | ID_3 | MC_1 | TACLR;
 }
 
 void msWait(const unsigned *msDelay)
@@ -49,7 +49,7 @@ void msWait(const unsigned *msDelay)
     msInitTimer(msDelay);
     while (true)
     {
-        if ((TA1CTL & MC_1) == 0x00)
+        if ((TA0CTL & MC_1) == 0x00)
         {
             break;
         }
@@ -70,6 +70,6 @@ void usWait(const unsigned *usDelay)
 
 void stopTimer()
 {
-    TA1CTL &= ~MC_3;
-    CLR (TA1CCTL0, CCIE);
+    TA0CTL &= ~MC_3;
+    CLR (TA0CCTL0, CCIE);
 }

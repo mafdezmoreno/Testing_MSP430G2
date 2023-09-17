@@ -112,6 +112,8 @@ unsigned char dht::readByte()
         CLR(TA1CTL, 0x30); //Halt Timer
         //if (TAR > 13)	 //40 @ 1x divider
         if (TA1R > 13)     //40 @ 1x divider
+        CLR(TA0CTL, 0x30); //Halt Timer
+        if (TA0R > 11)     //40 @ 1x divider
         {
             num |= 1 << (i - 1);
         }
