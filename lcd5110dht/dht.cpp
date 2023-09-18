@@ -10,8 +10,7 @@
 
 dht::dht()
 {
-    P2OUT |= BIT_DHT_VCC;       // VCC to dht
-    P2DIR |= BIT_DHT_VCC;
+    SET (P2OUT, BIT_DHT_VCC);       // VCC to dht
     humiDigits[0] = '0';
     humiDigits[1] = '0';
     tempDigits[0] = '0';
@@ -22,13 +21,16 @@ dht::dht()
 bool dht::readDht()
 {
 
-    static unsigned oneSec = 3000;
+    static unsigned threeSec = 3000;
+    static unsigned oneSec = 1000;
     unsigned char tmpData[5];
     unsigned char digits[5];
 
-    msWait(&oneSec);
+    SET (P2DIR, BIT_DHT_VCC);
+    msWait(&threeSec);
     readData(tmpData);
-
+    CLR(P2DIR, BIT_DHT_VCC);
+    msWait(&oneSec);
     if (checkChecksum(tmpData))
     {
         digits[0] = tmpData[0] / 10 + '0';
@@ -77,19 +79,34 @@ const char *dht::getHumidity()
     return str;
 }
 
-unsigned char dht::readData(unsigned char *data)
+void dht::readData(unsigned char *data)
 {
     startSignal();
     if (checkResponse())
     {
-        //Cannot be done with a for loop!
-        data[0] = readByte();
-        data[1] = readByte();
-        data[2] = readByte();
-        data[3] = readByte();
-        data[4] = readByte();
-        return 1;
-    } else return 0;
+        unsigned char i, j, num;
+        unsigned interruptIn = 90;
+
+        for (j = 0; j<5; j++)
+        {
+            num = 0;
+            for (i = 8; i > 0; i--)
+            {
+                while (!(TST(P2IN, DHT_PIN)));//Wait for signal to go high
+                usInitTimer(&interruptIn);
+                while (TST(P2IN, DHT_PIN)) //Wait for signal to go low
+                {
+                    if (timeOut()) break;
+                }
+                CLR(TA0CTL, 0x30); //Halt Timer
+                if (TA0R > 11)     //40 @ 1x divider
+                {
+                    num |= 1 << (i - 1);
+                }
+            }
+            data[j] = num;
+        }
+    }
 }
 
 void dht::startSignal()
@@ -104,50 +121,21 @@ void dht::startSignal()
     CLR(P2DIR, DHT_PIN);        // Set data pin to input direction
 }
 
-unsigned char dht::checkResponse()
+bool dht::checkResponse()
 {
-    unsigned wait = 100;
+    unsigned wait = 95;
     usInitTimer(&wait);
-    while (!(TST(P2IN, DHT_PIN)) && !(timeOut()));
-    if ((timeOut()))
+    while (!(TST(P2IN, DHT_PIN)));
     {
-        return 0;
-    } else
-    {
-        usInitTimer(&wait);
-        while ((TST(P2IN, DHT_PIN)) && !(timeOut()));
-        if ((timeOut()))
-        {
-            return 0;
-        } else
-        {
-            stopTimer();
-            return 1;
-        }
+        if (timeOut()) return false;
     }
-}
-
-unsigned char dht::readByte()
-{
-    unsigned char num = 0;
-    unsigned char i;
-    unsigned interruptIn = 90;
-
-    for (i = 8; i > 0; i--)
+    usInitTimer(&wait);
+    while (TST(P2IN, DHT_PIN))
     {
-        while (!(TST(P2IN, DHT_PIN)));//Wait for signal to go high
-        usInitTimer(&interruptIn);
-        while (TST(P2IN, DHT_PIN)) //Wait for signal to go low
-        {
-            if(timeOut()) break;
-        }
-        CLR(TA0CTL, 0x30); //Halt Timer
-        if (TA0R > 11)     //40 @ 1x divider
-        {
-            num |= 1 << (i - 1);
-        }
+        if (timeOut()) return false;
     }
-    return num;
+        //stopTimer(); // It's produces a delay that affects read (not use)
+    return true;
 }
 
 bool dht::checkChecksum(unsigned char * tmp)

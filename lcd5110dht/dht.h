@@ -31,10 +31,9 @@ private:
     unsigned char tempDigits[3];
     unsigned char humiDigits[2];
 
-    unsigned char readData(unsigned char * data);
+    void readData(unsigned char * data);
     void startSignal();
-    unsigned char checkResponse();
-    unsigned char readByte();
+    bool checkResponse();
     bool checkChecksum(unsigned char * tmp);
 };
 

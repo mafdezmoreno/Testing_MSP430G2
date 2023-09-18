@@ -1,7 +1,7 @@
 #include "lcd.h"
 #include "timer.h"
 
-lcd::lcd(dht & d):refD(d)
+lcd::lcd()
 {
     initLcd();
     P2OUT &= ~DISPLAY_LED_BIT;  // Drain current for display light
@@ -11,12 +11,13 @@ lcd::lcd(dht & d):refD(d)
     strcpy (lastTemperature, "00.0C");
     strcpy (lastHumidity, "HR00%");
     refresh();
+    pD = new dht;
     msWait(&msPause);
 }
 
 lcd::~lcd()
 {
-    //delete pDht;
+    delete pD;
 }
 
 void lcd::printDht()
@@ -32,7 +33,7 @@ void lcd::printDht()
         counter = '0';
     }
 
-    if (!refD.readDht())
+    if (!pD->readDht())
     {
         return;
     }
@@ -153,11 +154,11 @@ void lcd::updateMeasures()
 {
     const char * str;
 
-    str = refD.getHumidity();
+    str = pD->getHumidity();
     strcpy(lastHumidity, str);
     delete[] str;
 
-    str = refD.getTemperature();
+    str = pD->getTemperature();
     strcpy(lastTemperature, str);
     delete[] str;
 }

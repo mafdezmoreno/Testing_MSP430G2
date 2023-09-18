@@ -15,8 +15,7 @@ void initMcu()
 int main()
 {
     initMcu();
-    dht d;
-    lcd lcd(d);
+    lcd lcd;
 
     while(1)
     {
