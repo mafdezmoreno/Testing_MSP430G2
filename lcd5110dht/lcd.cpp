@@ -12,7 +12,7 @@ lcd::lcd()
     strcpy (lastHumidity, "HR00%");
     refresh();
     pD = new dht;
-    msWait(&msPause);
+    __delay_cycles(100000);
 }
 
 lcd::~lcd()

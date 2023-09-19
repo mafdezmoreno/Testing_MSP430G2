@@ -1,7 +1,7 @@
 
 #include "timer.h"
 
-bool timeOut()
+bool timer::timeOut()
 {
     return (TA0CTL & MC_1) == 0x00;
 }
@@ -24,7 +24,7 @@ __interrupt void dhtTimer(void)
     CLR (TA1CCTL0, CCIE);
 }
 
-void usInitTimer(const unsigned *us)
+void timer::usInitTimer(const unsigned *us)
 {
     TA0CCR0 = (unsigned) ((*us) / 4);          // Count up to limit
     //TA0CTL = TASSEL_2 | MC_1 | TACLR;
@@ -33,7 +33,7 @@ void usInitTimer(const unsigned *us)
     TA0CCTL0 |= CCIE;          // Enable interrupt
 }
 
-void msInitTimer(const unsigned *ms)
+void timer::msInitTimer(const unsigned *ms)
 {
     // TA0CTL |= TASSEL_1;     // ACLK as source (Current 32768Hz)
     // TA0CTL |= ID_3;         // DIV by 8 the prev source (Current 4096 Hz)
@@ -44,7 +44,7 @@ void msInitTimer(const unsigned *ms)
     TA0CTL = TASSEL_1 | ID_3 | MC_1 | TACLR;
 }
 
-void msWait(const unsigned *msDelay)
+void timer::msWait(const unsigned *msDelay)
 {
     msInitTimer(msDelay);
     while (true)
@@ -56,7 +56,7 @@ void msWait(const unsigned *msDelay)
     }
 }
 
-void usWait(const unsigned *usDelay)
+void timer::usWait(const unsigned *usDelay)
 {
     usInitTimer(usDelay);
     while (true)
@@ -68,7 +68,7 @@ void usWait(const unsigned *usDelay)
     }
 }
 
-void stopTimer()
+void timer::stopTimer()
 {
     TA0CTL &= ~MC_3;
     CLR (TA0CCTL0, CCIE);

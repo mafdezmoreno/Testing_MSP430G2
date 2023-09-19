@@ -10,12 +10,18 @@
 
 dht::dht()
 {
-    SET (P2OUT, BIT_DHT_VCC);       // VCC to dht
+    SET (P2OUT, BIT_DHT_VCC);       // VCC to dht (pin output)
     humiDigits[0] = '0';
     humiDigits[1] = '0';
     tempDigits[0] = '0';
     tempDigits[1] = '0';
     tempDigits[2] = '0';
+    pT = new timer;
+}
+
+dht::~dht()
+{
+    delete pT;
 }
 
 bool dht::readDht()
@@ -27,10 +33,10 @@ bool dht::readDht()
     unsigned char digits[5];
 
     SET (P2DIR, BIT_DHT_VCC);
-    msWait(&threeSec);
+    pT->msWait(&threeSec);
     readData(tmpData);
     CLR(P2DIR, BIT_DHT_VCC);
-    msWait(&oneSec);
+    pT->msWait(&oneSec);
     if (checkChecksum(tmpData))
     {
         digits[0] = tmpData[0] / 10 + '0';
@@ -93,10 +99,10 @@ void dht::readData(unsigned char *data)
             for (i = 8; i > 0; i--)
             {
                 while (!(TST(P2IN, DHT_PIN)));//Wait for signal to go high
-                usInitTimer(&interruptIn);
+                pT->usInitTimer(&interruptIn);
                 while (TST(P2IN, DHT_PIN)) //Wait for signal to go low
                 {
-                    if (timeOut()) break;
+                    if (pT->timeOut()) break;
                 }
                 CLR(TA0CTL, 0x30); //Halt Timer
                 if (TA0R > 11)     //40 @ 1x divider
@@ -115,24 +121,24 @@ void dht::startSignal()
     unsigned wait2 = 30;
     SET(P2DIR, DHT_PIN);        // Set Data pin to output direction
     CLR(P2OUT, DHT_PIN);        // Low for at least 18ms
-    msWait(&wait1);
+    pT->msWait(&wait1);
     SET(P2OUT, DHT_PIN);        // High for at 20us-40us
-    usWait(&wait2);
+    pT->usWait(&wait2);
     CLR(P2DIR, DHT_PIN);        // Set data pin to input direction
 }
 
 bool dht::checkResponse()
 {
     unsigned wait = 95;
-    usInitTimer(&wait);
+    pT->usInitTimer(&wait);
     while (!(TST(P2IN, DHT_PIN)));
     {
-        if (timeOut()) return false;
+        if (pT->timeOut()) return false;
     }
-    usInitTimer(&wait);
+    pT->usInitTimer(&wait);
     while (TST(P2IN, DHT_PIN))
     {
-        if (timeOut()) return false;
+        if (pT->timeOut()) return false;
     }
         //stopTimer(); // It's produces a delay that affects read (not use)
     return true;

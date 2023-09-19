@@ -5,10 +5,11 @@
  * * Replaced callbacks to timer 0 with timer 1. Included functions and methods to use both.
  */
 
-#ifndef DHT_H_
-#define DHT_H_
+#ifndef LCD5110DHT_DHT_H
+#define LCD5110DHT_DHT_H
 
 #include "msp430g2553.h"
+#include "timer.h"
 
 #define DHT_PIN BIT3
 #define BIT_DHT_VCC BIT2
@@ -22,6 +23,7 @@ class dht
 {
 public:
     dht();
+    ~dht();
     bool readDht();
     const char * getHumidity();
     const char * getTemperature();
@@ -30,6 +32,7 @@ private:
     unsigned char checksum;
     unsigned char tempDigits[3];
     unsigned char humiDigits[2];
+    timer *pT;
 
     void readData(unsigned char * data);
     void startSignal();
@@ -37,4 +40,4 @@ private:
     bool checkChecksum(unsigned char * tmp);
 };
 
-#endif /* DHT_H_ */
+#endif /* LCD5110DHT_DHT_H */
