@@ -32,7 +32,7 @@ private:
     unsigned char checksum;
     unsigned char tempDigits[3];
     unsigned char humiDigits[2];
-    timer *pT;
+    timer1 *pT;
 
     void readData(unsigned char * data);
     void startSignal();

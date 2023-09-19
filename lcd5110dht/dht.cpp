@@ -16,7 +16,7 @@ dht::dht()
     tempDigits[0] = '0';
     tempDigits[1] = '0';
     tempDigits[2] = '0';
-    pT = new timer;
+    pT = new timer1;
 }
 
 dht::~dht()
@@ -104,8 +104,8 @@ void dht::readData(unsigned char *data)
                 {
                     if (pT->timeOut()) break;
                 }
-                CLR(TA0CTL, 0x30); //Halt Timer
-                if (TA0R > 11)     //40 @ 1x divider
+                CLR(TA1CTL, 0x30); //Halt Timer
+                if (TA1R > 11)     //40 @ 1x divider
                 {
                     num |= 1 << (i - 1);
                 }

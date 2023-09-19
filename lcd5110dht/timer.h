@@ -8,7 +8,7 @@
 
 #include "msp430g2553.h"
 
-class timer
+class timer0
 {
 public:
     void usWait(const unsigned * usDelay);
@@ -19,6 +19,15 @@ public:
     void stopTimer();
 };
 
-
+class timer1
+{
+public:
+    void usWait(const unsigned * usDelay);
+    void msWait(const unsigned * msDelay);
+    void usInitTimer(const unsigned * us);
+    void msInitTimer(const unsigned * ms);
+    bool timeOut();
+    void stopTimer();
+};
 
 #endif /* LCD5110DHT_TIMER_H */

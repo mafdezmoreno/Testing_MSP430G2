@@ -12,12 +12,13 @@ lcd::lcd()
     strcpy (lastHumidity, "HR00%");
     refresh();
     pD = new dht;
-    __delay_cycles(100000);
+    pT = new timer0;
 }
 
 lcd::~lcd()
 {
     delete pD;
+    delete pT;
 }
 
 void lcd::printDht()
@@ -84,7 +85,7 @@ void lcd::initLcd()
     UCB0BR1 = 0;
     UCB0CTL1 &= ~UCSWRST;               // clear SW
 
-    __delay_cycles(100000);
+    pT->msWait(&msPause);
 
     writeToLcd(LCD5110_COMMAND, PCD8544_FUNCTIONSET | PCD8544_EXTENDEDINSTRUCTION);
     writeToLcd(LCD5110_COMMAND, PCD8544_SETVOP | 0x3F);
@@ -93,7 +94,7 @@ void lcd::initLcd()
     writeToLcd(LCD5110_COMMAND, PCD8544_FUNCTIONSET);
     writeToLcd(LCD5110_COMMAND, PCD8544_DISPLAYCONTROL | PCD8544_DISPLAYNORMAL);
 
-    __delay_cycles(100000);
+    pT->msWait(&msPause);
     clearLcd();
 }
 
