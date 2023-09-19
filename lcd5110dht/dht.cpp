@@ -26,44 +26,79 @@ dht::~dht()
 
 bool dht::readDht()
 {
-
-    static unsigned threeSec = 3000;
-    static unsigned oneSec = 1000;
+    static unsigned counter = 0;
     unsigned char tmpData[5];
-    unsigned char digits[5];
 
-    SET (P2DIR, BIT_DHT_VCC);
-    pT->msWait(&threeSec);
-    readData(tmpData);
-    CLR(P2DIR, BIT_DHT_VCC);
-    pT->msWait(&oneSec);
+    counter++;
+    switch (counter)
+    {
+        case 1:
+            SET (P2DIR, BIT_DHT_VCC); // Power to sensor
+            break;
+        case 3:
+            readData(tmpData);
+            CLR(P2DIR, BIT_DHT_VCC); // Stop sensor
+            counter = 0;
+            return analyzeResponse(tmpData);
+    }
+    return false;
+}
+
+bool dht::analyzeResponse(unsigned char * tmpData)
+{
     if (checkChecksum(tmpData))
     {
-        digits[0] = tmpData[0] / 10 + '0';
-        digits[1] = tmpData[0] % 10 + '0';
-        digits[2] = tmpData[2] / 10 + '0';
-        digits[3] = tmpData[2] % 10 + '0';
-        digits[4] = tmpData[3] % 10 + '0';
-
-        for (int i=0; i<5; i++)
+        unsigned char * digits;
+        digits = getDigits(tmpData);
+        if (!checkDigits(digits))
         {
-            if ( digits[0] >= '0' && digits[0] <= '9')
-            {
-                continue;
-            }
-            else
-            {
-                return false;
-            }
+            delete digits;
+            return false;
         }
-        humiDigits[0] = digits[0];
-        humiDigits[1] = digits[1];
-        tempDigits[0] = digits[2];
-        tempDigits[1] = digits[3];
-        tempDigits[2] = digits[4];
+        saveDigits(digits);
+        delete digits;
         return true;
     }
     return false;
+}
+
+unsigned char * dht::getDigits(unsigned char * tmpData)
+{
+    unsigned char * digits;
+    digits = new unsigned char [5];
+
+    digits[0] = tmpData[0] / 10 + '0';
+    digits[1] = tmpData[0] % 10 + '0';
+    digits[2] = tmpData[2] / 10 + '0';
+    digits[3] = tmpData[2] % 10 + '0';
+    digits[4] = tmpData[3] % 10 + '0';
+
+    return digits;
+}
+
+bool dht::checkDigits(const unsigned char * digits)
+{
+    for (int i=0; i<5; i++)
+    {
+        if ( digits[0] >= '0' && digits[0] <= '9')
+        {
+            continue;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+void dht::saveDigits(const unsigned char * digits)
+{
+    humiDigits[0] = digits[0];
+    humiDigits[1] = digits[1];
+    tempDigits[0] = digits[2];
+    tempDigits[1] = digits[3];
+    tempDigits[2] = digits[4];
 }
 
 const char *dht::getTemperature()

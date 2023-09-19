@@ -46,7 +46,7 @@ public:
     void printDht();
 
 private:
-    const unsigned msPause = 1000;
+    const unsigned waitOneSec = 1000;
     char lastTemperature[6];
     char lastHumidity[6];
     dht * pD;

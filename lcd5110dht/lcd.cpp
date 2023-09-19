@@ -25,19 +25,21 @@ void lcd::printDht()
 {
     static char counter = '0';
 
-    setAddr(40, 0);
-    writeStringToLcd(&counter, 1);
-    counter++;
-
-    if (counter > '9')
-    {
-        counter = '0';
-    }
+    pT->msWait(&waitOneSec);
 
     if (!pD->readDht())
     {
         return;
     }
+
+    setAddr(40, 0);
+    writeStringToLcd(&counter, 1);
+    counter++;
+    if (counter > '9')
+    {
+        counter = '0';
+    }
+
     updateMeasures();
     refresh();
 }
@@ -85,7 +87,7 @@ void lcd::initLcd()
     UCB0BR1 = 0;
     UCB0CTL1 &= ~UCSWRST;               // clear SW
 
-    pT->msWait(&msPause);
+    pT->msWait(&waitOneSec);
 
     writeToLcd(LCD5110_COMMAND, PCD8544_FUNCTIONSET | PCD8544_EXTENDEDINSTRUCTION);
     writeToLcd(LCD5110_COMMAND, PCD8544_SETVOP | 0x3F);
@@ -94,7 +96,7 @@ void lcd::initLcd()
     writeToLcd(LCD5110_COMMAND, PCD8544_FUNCTIONSET);
     writeToLcd(LCD5110_COMMAND, PCD8544_DISPLAYCONTROL | PCD8544_DISPLAYNORMAL);
 
-    pT->msWait(&msPause);
+    pT->msWait(&waitOneSec);
     clearLcd();
 }
 

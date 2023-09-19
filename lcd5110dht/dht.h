@@ -38,6 +38,12 @@ private:
     void startSignal();
     bool checkResponse();
     bool checkChecksum(unsigned char * tmp);
+    bool checkDigits(const unsigned char * digits);
+    void saveDigits(const unsigned char * digits);
+    unsigned char * getDigits(unsigned char * tmpData);
+    bool analyzeResponse(unsigned char * tmpData);
+
+
 };
 
 #endif /* LCD5110DHT_DHT_H */
