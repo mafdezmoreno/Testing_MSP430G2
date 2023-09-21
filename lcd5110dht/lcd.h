@@ -43,10 +43,12 @@ class lcd
 {
 public:
     lcd();
+    lcd(dht * d);
     ~lcd();
     void printDht();
 
 private:
+    bool dynamicAlloc;
     const unsigned waitOneSec = 1000;
     char lastTemperature[6];
     char lastHumidity[6];
@@ -61,6 +63,7 @@ private:
     void refresh();
 
     void initLcd();
+    void lcdOn();
     void writeToLcd(unsigned char dataCommand, unsigned char data);
     void writeCharToLcd(char c);
     void writeStringToLcd(const char *string, int numberCharacters);

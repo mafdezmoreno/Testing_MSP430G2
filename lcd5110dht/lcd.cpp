@@ -4,25 +4,40 @@
 lcd::lcd()
 {
     initLcd();
-    P2OUT &= ~DISPLAY_LED_BIT;  // Drain current for display light
-    P2DIR |= DISPLAY_LED_BIT;
-    setAddr(0, 0);
-    strcpy (lastTemperature, "00.0C");
-    strcpy (lastHumidity, "HR00%");
-    refresh();
+    lcdOn();
     pD = new dht;
+    dynamicAlloc = true;
+}
 
+lcd::lcd(dht * d)
+{
+    initLcd();
+    lcdOn();
+    pD = d;
+    dynamicAlloc = false;
+}
+
+lcd::~lcd()
+{
+    if (dynamicAlloc)
+    {
+        delete pD;
+    }
+    delete pT;
+}
+
+void lcd::lcdOn()
+{
 #ifdef LCD_TIMER0
     pT = new timer0;
 #else
     pT = new timer1;
 #endif
-}
-
-lcd::~lcd()
-{
-    delete pD;
-    delete pT;
+    P2OUT &= ~DISPLAY_LED_BIT;  // Drain current for display light
+    P2DIR |= DISPLAY_LED_BIT;
+    strcpy (lastTemperature, "00.0C");
+    strcpy (lastHumidity, "HR00%");
+    refresh();
 }
 
 void lcd::printDht()
