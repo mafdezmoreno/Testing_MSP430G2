@@ -4,7 +4,6 @@
 *.project
 */.settings
 */Debug/*
-#*/Release/*
 /.jxbrowser-data/*
 */.launches/
 */targetConfigs/*
@@ -49,3 +48,10 @@
 *.out
 *.app
 /.metadata/
+
+#Others
+/.idea/
+*.opt
+*.txt
+*.xml
+*.d_raw

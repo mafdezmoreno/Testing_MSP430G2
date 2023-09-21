@@ -1,4 +1,5 @@
 /Debug/
-/Release/
 /Debug__TI/
 /Release__TI/
+.idea
+targetConfigs/
