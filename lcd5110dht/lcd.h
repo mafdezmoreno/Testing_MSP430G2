@@ -37,6 +37,7 @@
 #define LCD5110_COMMAND             0
 #define LCD5110_DATA                1
 
+#define LCD_TIMER0
 
 class lcd
 {
@@ -50,7 +51,11 @@ private:
     char lastTemperature[6];
     char lastHumidity[6];
     dht * pD;
+#ifdef LCD_TIMER0
     timer0 * pT;
+#else
+    timer1 * pT;
+#endif
 
     void updateMeasures();
     void refresh();

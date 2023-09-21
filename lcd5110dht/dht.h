@@ -19,6 +19,8 @@
 #define SET(x,y)	(x|= (y))
 #define CLR(x,y)	(x &= ~(y))
 
+#define DHT_TIMER1
+
 class dht
 {
 public:
@@ -29,10 +31,14 @@ public:
     const char * getTemperature();
 
 private:
-    unsigned char checksum;
     unsigned char tempDigits[3];
     unsigned char humiDigits[2];
+
+#ifdef DHT_TIMER1
     timer1 *pT;
+#else
+    timer0 *pT;
+#endif
 
     void readData(unsigned char * data);
     void startSignal();
@@ -42,8 +48,6 @@ private:
     void saveDigits(const unsigned char * digits);
     unsigned char * getDigits(unsigned char * tmpData);
     bool analyzeResponse(unsigned char * tmpData);
-
-
 };
 
 #endif /* LCD5110DHT_DHT_H */

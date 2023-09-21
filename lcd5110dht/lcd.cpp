@@ -7,12 +7,16 @@ lcd::lcd()
     P2OUT &= ~DISPLAY_LED_BIT;  // Drain current for display light
     P2DIR |= DISPLAY_LED_BIT;
     setAddr(0, 0);
-    writeStringToLcd("Hola", 5);
     strcpy (lastTemperature, "00.0C");
     strcpy (lastHumidity, "HR00%");
     refresh();
     pD = new dht;
+
+#ifdef LCD_TIMER0
     pT = new timer0;
+#else
+    pT = new timer1;
+#endif
 }
 
 lcd::~lcd()
@@ -32,7 +36,7 @@ void lcd::printDht()
         return;
     }
 
-    setAddr(40, 0);
+    setAddr(0, 0);
     writeStringToLcd(&counter, 1);
     counter++;
     if (counter > '9')

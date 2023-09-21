@@ -2,7 +2,7 @@
  * Based on https://github.com/bafeigum/DHT11-Library-for-MSP430/tree/master from Bryce Feigum
  * Changes:
  * * Improved with encapsulations.
- * * Replaced callbacks to timer 0 with timer 1. Included functions and methods to use both.
+ * * Moved timer management into a class
  */
 
 #include "dht.h"
@@ -16,7 +16,12 @@ dht::dht()
     tempDigits[0] = '0';
     tempDigits[1] = '0';
     tempDigits[2] = '0';
+
+#ifdef DHT_TIMER1
     pT = new timer1;
+#else DHT_TIMER0
+    pT = new timer0;
+#endif
 }
 
 dht::~dht()
@@ -139,11 +144,19 @@ void dht::readData(unsigned char *data)
                 {
                     if (pT->timeOut()) break;
                 }
+#ifdef DHT_TIMER1
                 CLR(TA1CTL, 0x30); //Halt Timer
                 if (TA1R > 11)     //40 @ 1x divider
                 {
                     num |= 1 << (i - 1);
                 }
+#else
+                CLR(TA0CTL, 0x30); //Halt Timer
+                if (TA0R > 11)     //40 @ 1x divider
+                {
+                    num |= 1 << (i - 1);
+                }
+#endif
             }
             data[j] = num;
         }
