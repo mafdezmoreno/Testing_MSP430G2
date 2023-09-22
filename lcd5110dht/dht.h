@@ -48,6 +48,9 @@ private:
     void saveDigits(const unsigned char * digits);
     unsigned char * getDigits(unsigned char * tmpData);
     bool analyzeResponse(unsigned char * tmpData);
+
+    void powerOn();
+    void powerOff();
 };
 
 #endif /* LCD5110DHT_DHT_H */

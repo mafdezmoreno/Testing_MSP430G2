@@ -6,6 +6,9 @@
 #define SET(x,y)	(x|= (y))
 #define CLR(x,y)	(x &= ~(y))
 
+#define LOW_POWER_MODE // Reduces consumption ~30mA
+                       // Only for timer used in delays
+
 #include "msp430g2553.h"
 
 class timer0

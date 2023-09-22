@@ -19,7 +19,7 @@ dht::dht()
 
 #ifdef DHT_TIMER1
     pT = new timer1;
-#else DHT_TIMER0
+#else
     pT = new timer0;
 #endif
 }
@@ -38,13 +38,14 @@ bool dht::readDht()
     switch (counter)
     {
         case 1:
-            SET (P2DIR, BIT_DHT_VCC); // Power to sensor
+            powerOn();
             break;
         case 3:
             readData(tmpData);
-            CLR(P2DIR, BIT_DHT_VCC); // Stop sensor
-            counter = 0;
+            powerOff();
             return analyzeResponse(tmpData);
+        case 10:
+            counter = 0;
     }
     return false;
 }
@@ -199,4 +200,14 @@ bool dht::checkChecksum(unsigned char * tmp)
         return false;
     }
     return true;
+}
+
+void dht::powerOn()
+{
+    SET (P2DIR, BIT_DHT_VCC);
+}
+
+void dht::powerOff()
+{
+    CLR(P2DIR, BIT_DHT_VCC);
 }

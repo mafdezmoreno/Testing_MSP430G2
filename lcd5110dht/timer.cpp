@@ -6,6 +6,9 @@ __interrupt void ccr0Isr(void)
 {
     TA0CTL &= ~MC_3;
     CLR (TA0CCTL0, CCIE);
+#ifdef LOW_POWER_MODE
+    __bic_SR_register_on_exit(LPM3_bits);
+#endif
 }
 
 #pragma vector = TIMER1_A0_VECTOR
@@ -46,6 +49,9 @@ void timer0::usInitTimer(const unsigned *us)
     TA0CTL = TASSEL_2 + ID_2 + MC_1 + TACLR;
     // SMCLK, div 4, up mode, restart
     TA0CCTL0 |= CCIE;          // Enable interrupt
+#ifdef LOW_POWER_MODE
+    __bis_SR_register(LPM3_bits);
+#endif
 }
 
 void timer0::msInitTimer(const unsigned *ms)
@@ -57,6 +63,9 @@ void timer0::msInitTimer(const unsigned *ms)
     TA0CCTL0 |= CCIE;          // Enable interrupt
     TA0CCR0 = (*ms) * 5;          // Count up to limit
     TA0CTL = TASSEL_1 | ID_3 | MC_1 | TACLR;
+#ifdef LOW_POWER_MODE
+    __bis_SR_register(LPM3_bits);
+#endif
 }
 
 
