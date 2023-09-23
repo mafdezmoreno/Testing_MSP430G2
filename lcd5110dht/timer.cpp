@@ -44,10 +44,10 @@ void timer0::usWait(const unsigned *usDelay)
 
 void timer0::usInitTimer(const unsigned *us)
 {
-    TA0CCR0 = (unsigned) ((*us) / 4);          // Count up to limit
+    TA0CCR0 = (unsigned) (*us);          // Count up to limit
     //TA0CTL = TASSEL_2 | MC_1 | TACLR;
-    TA0CTL = TASSEL_2 + ID_2 + MC_1 + TACLR;
-    // SMCLK, div 4, up mode, restart
+    TA0CTL = TASSEL_2 + MC_1 + TACLR;
+    // SMCLK, up mode, restart
     TA0CCTL0 |= CCIE;          // Enable interrupt
 #ifdef LOW_POWER_MODE
     __bis_SR_register(LPM3_bits);
@@ -61,7 +61,7 @@ void timer0::msInitTimer(const unsigned *ms)
     // TA0CTL |= MC_1;         // Count Up mode
     // TA0CTL |= TACLR;        // Reset timer
     TA0CCTL0 |= CCIE;          // Enable interrupt
-    TA0CCR0 = (*ms) * 5;          // Count up to limit
+    TA0CCR0 = (*ms) * 5;       // Count up to limit
     TA0CTL = TASSEL_1 | ID_3 | MC_1 | TACLR;
 #ifdef LOW_POWER_MODE
     __bis_SR_register(LPM3_bits);
@@ -106,8 +106,8 @@ void timer1::usWait(const unsigned *usDelay)
 
 void timer1::usInitTimer(const unsigned *us)
 {
-    TA1CCR0 = (unsigned) ((*us) / 4);
-    TA1CTL = TASSEL_2 + ID_2 + MC_1 + TACLR;
+    TA1CCR0 = (unsigned) (*us);
+    TA1CTL = TASSEL_2 + MC_1 + TACLR;
     TA1CCTL0 |= CCIE;
 }
 

@@ -119,13 +119,13 @@ void lcd::initLcd()
     clearLcd();
 }
 
-void lcd::writeCharToLcd(char c)
+void lcd::writeCharToLcd(unsigned int c)
 {
-    unsigned char i;
-    for (i = 0; i < 5; i++)
+    unsigned int i;
+    for (i = 5; i > 0; --i)
     {
         //writeToLcd(LCD5110_DATA, font[c - 0x2D][i]);
-        writeToLcd(LCD5110_DATA, font[c - 0x20][i]);
+        writeToLcd(LCD5110_DATA, font[c - 0x20][5-i]);
     }
     writeToLcd(LCD5110_DATA, 0);
 }

@@ -65,7 +65,7 @@ private:
     void initLcd();
     void lcdOn();
     void writeToLcd(unsigned char dataCommand, unsigned char data);
-    void writeCharToLcd(char c);
+    void writeCharToLcd(unsigned int c);
     void writeStringToLcd(const char *string, int numberCharacters);
     void setAddr(unsigned char xAddr, unsigned char yAddr);
     void clearLcd();

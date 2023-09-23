@@ -147,7 +147,7 @@ void dht::readData(unsigned char *data)
                 }
 #ifdef DHT_TIMER1
                 CLR(TA1CTL, 0x30); //Halt Timer
-                if (TA1R > 11)     //40 @ 1x divider
+                if (TA1R > 44)     //40 @ 1x divider
                 {
                     num |= 1 << (i - 1);
                 }
