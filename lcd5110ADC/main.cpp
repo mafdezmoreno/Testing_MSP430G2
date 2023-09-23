@@ -5,6 +5,7 @@
 
 #include "msp430g2553.h"
 #include "lcd.h"
+#include "adc.h"
 #include <stdio.h>
 
 #define DISPLAY_LED_BIT BIT5
@@ -19,20 +20,17 @@ void ledOff();
 void enableDisplayLight();
 void displayLedOn();
 
-void initAdc2();
-unsigned a2Read();
-void stopAdc2();
-
 int main(void)
 {
     init();
+    adc2 a;
+    batLvl bL(&a);
     char counter = '0';
     for(;;)
     {
         char read[5]{"0000"};
-        initAdc2();
-        sprintf(read, "%d", a2Read());
-        stopAdc2();
+        a.getRead();
+        sprintf(read, "%d", a.getRead());
 
         initLcd();
         setAddr(0, 0);
@@ -41,6 +39,11 @@ int main(void)
         writeStringToLcd(read, 10);
         setAddr(0, 2);
         writeStringToLcd("done", 4);
+
+        char batLvl[4]{"B:0"};
+        batLvl[2] = bL.getBatLvl();
+        setAddr(30, 0);
+        writeStringToLcd(batLvl, 3);
         __delay_cycles(500000);
 
         counter++;
@@ -67,27 +70,6 @@ void init()
     __delay_cycles(100000);
 }
 
-void initAdc2()
-{
-    ADC10CTL1 = INCH_2;     // input A2
-    ADC10CTL0 = SREF_1 + ADC10SHT_2 + REFON + ADC10ON + ADC10IE;
-    ADC10AE0 |= BIT2;
-}
-
-unsigned a2Read()
-{
-    ADC10CTL0 |= ENC + ADC10SC;         // Sampling and conversion start
-    __bis_SR_register(CPUOFF + GIE);    // LPM0, ADC10_ISR will force exit
-    return ADC10MEM;
-}
-
-void stopAdc2()
-{
-    ADC10CTL0 = 0x00;
-    ADC10CTL1 = 0x00;
-    ADC10AE0 = 0x00;
-}
-
 void initLed()
 {
     P2DIR |= LED_BIT;
@@ -111,10 +93,4 @@ void enableDisplayLight()
 void displayLedOn()
 {
     P2OUT &= ~DISPLAY_LED_BIT;
-}
-
-#pragma vector=ADC10_VECTOR
-__interrupt void ADC10_ISR(void)
-{
-    __bic_SR_register_on_exit(CPUOFF);
 }

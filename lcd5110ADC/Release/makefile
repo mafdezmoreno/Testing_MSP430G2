@@ -8,6 +8,7 @@ GEN_OPTS__FLAG :=
 GEN_CMDS__FLAG := 
 
 ORDERED_OBJS += \
+"./adc.obj" \
 "./lcd.obj" \
 "./main.obj" \
 "../lnk_msp430g2553.cmd" \
@@ -153,8 +154,8 @@ lcd5110.txt: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "lcd.obj" "main.obj" 
-	-$(RM) "lcd.d" "main.d" 
+	-$(RM) "adc.obj" "lcd.obj" "main.obj" 
+	-$(RM) "adc.d" "lcd.d" "main.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
