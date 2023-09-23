@@ -53,7 +53,7 @@ int main(void)
 
 void init()
 {
-    WDTCTL = WDTPW + WDTHOLD;                   // Stop WDT
+    WDTCTL = WDTPW + WDTHOLD;   // Stop WDT
     DCOCTL = CALDCO_1MHZ;
     BCSCTL1 = CALBC1_1MHZ;
 
@@ -69,15 +69,15 @@ void init()
 
 void initAdc2()
 {
-    ADC10CTL1 = INCH_2;  // input A2
-    ADC10CTL0 = SREF_1 + ADC10SHT_2 + REFON + ADC10ON;
+    ADC10CTL1 = INCH_2;     // input A2
+    ADC10CTL0 = SREF_1 + ADC10SHT_2 + REFON + ADC10ON + ADC10IE;
     ADC10AE0 |= BIT2;
 }
 
 unsigned a2Read()
 {
-    ADC10CTL0 |= ENC + ADC10SC;     // Sampling and conversion start
-    while (ADC10CTL1 & ADC10BUSY);  // ADC10BUSY?
+    ADC10CTL0 |= ENC + ADC10SC;         // Sampling and conversion start
+    __bis_SR_register(CPUOFF + GIE);    // LPM0, ADC10_ISR will force exit
     return ADC10MEM;
 }
 
@@ -90,12 +90,12 @@ void stopAdc2()
 
 void initLed()
 {
-    P2DIR |= LED_BIT;                              // Set P2.4 to output direction
+    P2DIR |= LED_BIT;
 }
 
 void ledOn()
 {
-    P2OUT |= LED_BIT;                              // Set P2.4 to output direction
+    P2OUT |= LED_BIT;
 }
 
 void ledOff()
@@ -111,4 +111,10 @@ void enableDisplayLight()
 void displayLedOn()
 {
     P2OUT &= ~DISPLAY_LED_BIT;
+}
+
+#pragma vector=ADC10_VECTOR
+__interrupt void ADC10_ISR(void)
+{
+    __bic_SR_register_on_exit(CPUOFF);
 }
