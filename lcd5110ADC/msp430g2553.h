@@ -1,0 +1,1 @@
+/Applications/ti/ccs1240/ccs/ccs_base/msp430/include/msp430g2553.h

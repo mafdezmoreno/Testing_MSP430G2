@@ -59,6 +59,9 @@ For example, to use a launchpad MSP430G2, the device is `rf2500`
 ## 5110 Display + DHT
 [Link to code](https://github.com/mafdezmoreno/Testing_MSP430G2/tree/main/lcd5110dht)
 
+## 5110 Display + ADC
+[Link to code](https://github.com/mafdezmoreno/Testing_MSP430G2/tree/main/lcd5110ADC)
+
 ## LCD
 [Link to code](https://github.com/mafdezmoreno/Testing_MSP430G2/tree/main/LCD_Test_MSP430G2454)
 
