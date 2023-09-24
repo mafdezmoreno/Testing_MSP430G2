@@ -180,7 +180,7 @@ bool dht::checkResponse()
 {
     unsigned wait = 95;
     pT->usInitTimer(&wait);
-    while (!(TST(P2IN, DHT_PIN)));
+    while (!(TST(P2IN, DHT_PIN)))
     {
         if (pT->timeOut()) return false;
     }
