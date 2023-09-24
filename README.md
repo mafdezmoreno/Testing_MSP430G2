@@ -63,6 +63,7 @@ For example, to use a launchpad MSP430G2, the device is `rf2500`
 [Link to code](https://github.com/mafdezmoreno/Testing_MSP430G2/tree/main/lcd5110ADC)
 
 ## LCD
+![alt text](images/LCD.jpg)
 [Link to code](https://github.com/mafdezmoreno/Testing_MSP430G2/tree/main/LCD_Test_MSP430G2454)
 
 ## Low Frequency External Clock

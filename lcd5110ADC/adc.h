@@ -1,5 +1,5 @@
-#ifndef ADC_H_
-#define ADC_H_
+#ifndef LCD5110ADC_ADC_H
+#define LCD5110ADC_ADC_H
 
 class adc2
 {
@@ -31,4 +31,4 @@ private:
     void computeLvl(unsigned * read);
 };
 
-#endif /* ADC_H_ */
+#endif /* LCD5110ADC_ADC_H */
